@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "zrive-ds"
+name = "zrive-ds-1q24-industry-classification"
 version = "0.1.0"
 description = "Project for the program Zrive Applied Data Science"
 authors = ["Guille Barquero <gb@zriveapp.com>"]
@@ -16,14 +16,12 @@ flake8 = "^6.1.0"
 mypy = "^1.5.1"
 pytest = "^7.4.0"
 scikit-learn = "^1.4.1.post1"
-ipykernel = "^6.29.3"
 beautifulsoup4 = "^4.12.3"
 pyarrow = "^15.0.2"
 
-
 [tool.poetry.group.dev.dependencies]
 deptry = "^0.15.0"
-
+ipykernel = "^6.29.4"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
