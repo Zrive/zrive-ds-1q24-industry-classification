@@ -27,6 +27,7 @@ beautifulsoup4 = "^4.12.3"
 pyarrow = "^15.0.2"
 spacy = "^3.7.4"
 nltk = "^3.8.1"
+tensorflow = "^2.16.1"
 
 [tool.poetry.group.dev.dependencies]
 deptry = "^0.15.0"
