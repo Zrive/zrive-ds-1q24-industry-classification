@@ -259,4 +259,190 @@ class LogisticRegressionClassifier:
         plt.legend(loc="best")
         plt.show()
         f1_average = np.mean(f1_scores)
-        logging.info("Average F1 Score Logistic Regression: %f", f1_average)
+        logging.info("Average F1 Score Logistic Regression: %f", f1_average) 
+        
+class RandomForestClassifierModel:
+    def __init__(self, X_train, y_train, X_val, y_val):
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_val = X_val
+        self.y_val = y_val
+        self.model = RandomForestClassifier(n_estimators=100, random_state=42)
+        
+    def train(self):
+        self.model.fit(self.X_train, self.y_train)
+    
+    def evaluate(self):
+        y_val_pred = self.model.predict(self.X_val)
+        y_val_proba = self.model.predict_proba(self.X_val)
+        
+        conf_matrix = confusion_matrix(self.y_val, y_val_pred)
+        report = classification_report(self.y_val, y_val_pred)
+        f1 = f1_score(self.y_val, y_val_pred, average='weighted')
+        
+        logging.info("Confusion Matrix:\n%s", conf_matrix)
+        logging.info("\nClassification Report Random Forest:\n%s", report)
+        logging.info("F1 Score Random Forest: %f", f1)
+        
+        self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+    def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
+        unique_classes = np.unique(self.y_train)
+        y_val_binarized = label_binarize(self.y_val, classes=unique_classes)
+
+        precision = dict()
+        recall = dict()
+        average_precision = dict()
+        f1_scores = []
+        
+        colors = cycle(plt.cm.viridis(np.linspace(0, 1, len(unique_classes))))
+        plt.figure(figsize=(10, 8))
+
+        for i, color in zip(range(len(unique_classes)), colors):
+            precision[i], recall[i], _ = precision_recall_curve(y_val_binarized[:, i], y_val_proba[:, i])
+            average_precision[i] = average_precision_score(y_val_binarized[:, i], y_val_proba[:, i])
+            f1 = (2 * precision[i] * recall[i]) / (np.nan_to_num(precision[i]) + np.nan_to_num(recall[i]))
+            f1_scores.append(np.nanmax(f1))
+            plt.plot(recall[i], precision[i], color=color, lw=2,
+                     label='Class {0} (AP={1:0.2f})'.format(unique_classes[i], average_precision[i])) 
+
+        precision["micro"], recall["micro"], _ = precision_recall_curve(y_val_binarized.ravel(), y_val_proba.ravel())
+        average_precision["micro"] = average_precision_score(y_val_binarized, y_val_proba, average="micro")
+        
+        plt.plot(recall["micro"], precision["micro"], color='gold', linestyle=':', linewidth=4,
+                 label='Micro-average Precision-Recall (AP={0:0.2f})'.format(average_precision["micro"]))
+
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title('Precision-Recall Curve (Random Forest)')
+        plt.legend(loc="best")
+        plt.show()
+
+        f1_average = np.mean(f1_scores)
+        logging.info("Average F1 Score Random Forest: %f", f1_average) 
+        
+class SVMClassifier:
+    def __init__(self, X_train, y_train, X_val, y_val):
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_val = X_val
+        self.y_val = y_val
+        self.model = SVC(probability=True, random_state=42)
+        
+    def train(self):
+        self.model.fit(self.X_train, self.y_train)
+    
+    def evaluate(self):
+        y_val_pred = self.model.predict(self.X_val)
+        y_val_proba = self.model.predict_proba(self.X_val)
+        
+        conf_matrix = confusion_matrix(self.y_val, y_val_pred)
+        report = classification_report(self.y_val, y_val_pred)
+        f1 = f1_score(self.y_val, y_val_pred, average='weighted')
+        
+        logging.info("Confusion Matrix:\n%s", conf_matrix)
+        logging.info("\nClassification Report SVM:\n%s", report)
+        logging.info("F1 Score SVM: %f", f1)
+        
+        self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+    def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
+        unique_classes = np.unique(self.y_train)
+        y_val_binarized = label_binarize(self.y_val, classes=unique_classes)
+
+        precision = dict()
+        recall = dict()
+        average_precision = dict()
+        f1_scores = []
+        
+        colors = cycle(plt.cm.viridis(np.linspace(0, 1, len(unique_classes))))
+        plt.figure(figsize=(10, 8))
+
+        for i, color in zip(range(len(unique_classes)), colors):
+            precision[i], recall[i], _ = precision_recall_curve(y_val_binarized[:, i], y_val_proba[:, i])
+            average_precision[i] = average_precision_score(y_val_binarized[:, i], y_val_proba[:, i])
+            f1 = 2 * (precision[i] * recall[i]) / (np.nan_to_num(precision[i]) + np.nan_to_num(recall[i]))
+            f1_scores.append(np.nanmax(f1))
+            plt.plot(recall[i], precision[i], color=color, lw=2,
+                     label='Class {0} (AP={1:0.2f})'.format(unique_classes[i], average_precision[i]))  
+
+        precision["micro"], recall["micro"], _ = precision_recall_curve(y_val_binarized.ravel(), y_val_proba.ravel())
+        average_precision["micro"] = average_precision_score(y_val_binarized, y_val_proba, average="micro")
+
+        plt.plot(recall["micro"], precision["micro"], color='gold', linestyle=':', linewidth=4,
+                 label='Micro-average Precision-Recall (AP={0:0.2f})'.format(average_precision["micro"]))
+
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title('Precision-Recall Curve (SVM)')
+        plt.legend(loc="best")
+        plt.show()
+
+        f1_average = np.mean(f1_scores)
+        logging.info("Average F1 Score SVM: %f", f1_average)  
+        
+class LDAClassifier:
+    def __init__(self, X_train, y_train, X_val, y_val):
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_val = X_val
+        self.y_val = y_val
+        self.model = LinearDiscriminantAnalysis()
+        
+    def train(self):
+        self.model.fit(self.X_train, self.y_train)
+    
+    def evaluate(self):
+        y_val_pred = self.model.predict(self.X_val)
+        y_val_proba = self.model.predict_proba(self.X_val)
+        
+        conf_matrix = confusion_matrix(self.y_val, y_val_pred)
+        report = classification_report(self.y_val, y_val_pred)
+        f1 = f1_score(self.y_val, y_val_pred, average='weighted')
+        logloss = log_loss(self.y_val, y_val_proba)
+        
+        logging.info("Confusion Matrix:\n%s", conf_matrix)
+        logging.info("\nClassification Report LDA:\n%s", report)
+        logging.info("F1 Score LDA: %f", f1)
+        logging.info("Log Loss LDA: %f", logloss)
+        
+        classification_errors = 1 - np.diag(conf_matrix) / np.sum(conf_matrix, axis=1)
+        mean_classification_error = np.mean(classification_errors)
+        logging.info("Mean Classification Error: %f", mean_classification_error)
+        
+        self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+    def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
+        unique_classes = np.unique(self.y_train)
+        y_val_binarized = label_binarize(self.y_val, classes=unique_classes)
+
+        precision = dict()
+        recall = dict()
+        average_precision = dict()
+        f1_scores = []
+        
+        colors = cycle(plt.cm.viridis(np.linspace(0, 1, len(unique_classes))))
+        plt.figure(figsize=(10, 8))
+
+        for i, color in zip(range(len(unique_classes)), colors):
+            precision[i], recall[i], _ = precision_recall_curve(y_val_binarized[:, i], y_val_proba[:, i])
+            average_precision[i] = average_precision_score(y_val_binarized[:, i], y_val_proba[:, i])
+            f1 = (2 * precision[i] * recall[i]) / (np.nan_to_num(precision[i]) + np.nan_to_num(recall[i]))
+            f1_scores.append(np.nanmax(f1))
+            plt.plot(recall[i], precision[i], color=color, lw=2,
+                     label='Class {0} (AP={1:0.2f})'.format(unique_classes[i], average_precision[i]))  
+
+        precision["micro"], recall["micro"], _ = precision_recall_curve(y_val_binarized.ravel(), y_val_proba.ravel())
+        average_precision["micro"] = average_precision_score(y_val_binarized, y_val_proba, average="micro")
+
+        plt.plot(recall["micro"], precision["micro"], color='gold', linestyle=':', linewidth=4,
+                 label='Micro-average Precision-Recall (AP={0:0.2f})'.format(average_precision["micro"]))
+
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title('Precision-Recall Curve (LDA)')
+        plt.legend(loc="best")
+        plt.show()
+
+        f1_average = np.mean(f1_scores)
+        logging.info("Average F1 Score LDA: %f", f1_average)
