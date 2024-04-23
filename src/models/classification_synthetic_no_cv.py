@@ -224,6 +224,8 @@ class LogisticRegressionClassifier:
         logging.info("Classification Report:\n" + report)
         logging.info("F1 Score: %f", f1)
         self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+        return f1
 
     def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
         unique_classes = np.unique(self.y_train)
@@ -277,6 +279,8 @@ class RandomForestClassifierModel:
         logging.info("F1 Score Random Forest: %f", f1)
         
         self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+        return f1
         
     def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
         unique_classes = np.unique(self.y_train)
@@ -337,6 +341,8 @@ class SVMClassifier:
         logging.info("F1 Score SVM: %f", f1)
         
         self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+        return f1
         
     def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
         unique_classes = np.unique(self.y_train)
@@ -403,6 +409,8 @@ class LDAClassifier:
         logging.info("Mean Classification Error: %f", mean_classification_error)
         
         self.plot_precision_recall_curve(y_val_pred, y_val_proba)
+        
+        return f1
         
     def plot_precision_recall_curve(self, y_val_pred, y_val_proba):
         unique_classes = np.unique(self.y_train)
