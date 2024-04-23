@@ -445,4 +445,51 @@ class LDAClassifier:
         plt.show()
 
         f1_average = np.mean(f1_scores)
-        logging.info("Average F1 Score LDA: %f", f1_average)
+        logging.info("Average F1 Score LDA: %f", f1_average) 
+        
+class SummaryClassificationSyntheticNoCV:
+    def __init__(self, route_synthetic, route_coverwallet):
+        self.route_synthetic = route_synthetic
+        self.route_coverwallet = route_coverwallet
+        self.classifiers = {
+            'Logistic Regression': LogisticRegressionClassifier,
+            'Random Forest': RandomForestClassifierModel,
+            'SVM': SVMClassifier,
+            'LDA': LDAClassifier
+        }
+        self.f1_scores = {}
+        self.df_embeddings = None
+
+    def process_data(self):
+        data_creator = DataCreation(self.route_synthetic, self.route_coverwallet)
+        df_unified = data_creator.df_coverwallet_aumented
+
+        processor = DatasetProcessor(df_unified)
+        self.df_embeddings = processor.get_dataframe()
+
+        logging.info("Head of the embeddings DataFrame:")
+        logging.info(self.df_embeddings.head())
+
+    def train_and_evaluate_models(self):
+        X_train, X_val, y_train, y_val = self.split_data(self.df_embeddings)
+
+        for name, Classifier in self.classifiers.items():
+            classifier = Classifier(X_train, y_train, X_val, y_val)
+            classifier.train()
+            f1_score = classifier.evaluate()
+            self.f1_scores[name] = f1_score
+
+    def split_data(self, df_embeddings):
+        X = np.stack(df_embeddings['embeddings'].apply(lambda x: np.array(x).flatten()))
+        y = df_embeddings['label'].to_numpy()
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+        return X_train, X_val, y_train, y_val
+
+    def determine_winner(self):
+        winner = max(self.f1_scores, key=self.f1_scores.get)
+        logging.info(f"From the classification models of the augmented embeddings dataset, the one with the biggest average f1-score is: {winner}")
+
+    def run(self):
+        self.process_data()
+        self.train_and_evaluate_models()
+        self.determine_winner()
