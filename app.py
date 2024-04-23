@@ -1,6 +1,7 @@
 import logging
 from src.models.df_coverwallet_creation import DataProcessor
-from src.models.classification_synthetic_no_cv import DataCreation,NaicsRebalancer
+from src.models.classification_synthetic_no_cv import DataCreation,NaicsRebalancer,DatasetProcessor
+import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -18,10 +19,14 @@ def main():
     ROUTE_SYNTHETIC= 'src/data/synthetic_preprocessed.parquet' 
     ROUTE_COVERWALLET= 'src/data/coverwallet.xlsx'
     data_creator = DataCreation(ROUTE_SYNTHETIC, ROUTE_COVERWALLET)
+    df_unified = data_creator.df_coverwallet_aumented  
 
-    result_df = data_creator.process_data()
-
-    print("Resultado del procesamiento de datos:")
-    print(result_df.head())
+    processor = DatasetProcessor(df_unified)
+    df_embeddings = processor.get_dataframe()
+    
+    logging.info("Head of the embeddings DataFrame:")
+    logging.info(df_embeddings.head())
+    
+    
 if __name__ == '__main__':
     main()
