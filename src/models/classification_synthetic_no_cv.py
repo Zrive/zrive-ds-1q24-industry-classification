@@ -205,25 +205,17 @@ class DatasetProcessor:
         return self.df_embeddings 
     
 class LogisticRegressionClassifier:
-    def __init__(self, dataframe):
-        self.dataframe = dataframe
+    def __init__(self, X_train, y_train, X_val, y_val):
         self.model = LogisticRegression(max_iter=1000, solver='lbfgs', multi_class='multinomial')
-        self.X_train = None
-        self.y_train = None
-        self.X_val = None
-        self.y_val = None
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_val = X_val
+        self.y_val = y_val
 
-    def prepare_data(self):
-        df_training, df_val = train_test_split(self.dataframe, test_size=0.2, random_state=42, stratify=self.dataframe['label'])
-        self.X_train = np.stack(df_training['embeddings'].apply(lambda x: np.array(x).flatten()))
-        self.y_train = df_training['label'].to_numpy()
-        self.X_val = np.stack(df_val['embeddings'].apply(lambda x: np.array(x).flatten()))
-        self.y_val = df_val['label'].to_numpy()
-
-    def train_model(self):
+    def train(self):
         self.model.fit(self.X_train, self.y_train)
 
-    def evaluate_model(self):
+    def evaluate(self):
         y_val_pred = self.model.predict(self.X_val)
         y_val_proba = self.model.predict_proba(self.X_val)
         conf_matrix = confusion_matrix(self.y_val, y_val_pred)
