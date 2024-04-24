@@ -1,12 +1,18 @@
 import logging
 from src.models.df_coverwallet_creation import DataProcessor
+<<<<<<< HEAD
 from src.models.data_augmentation import NAICSRebalancer
 import pandas as pd
+=======
+from src.models.classification_synthetic_no_cv import SummaryClassificationSyntheticNoCV
+import matplotlib.pyplot as plt
+>>>>>>> classification_synthetic_no_cv
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
     
+<<<<<<< HEAD
     ROUTE_COVERWALLET= 'src/data/coverwallet.xlsx'
     
     df_coverwallet_aumentation = pd.read_excel(ROUTE_COVERWALLET)
@@ -19,6 +25,14 @@ def main():
         logging.info("\n%s", df_naics_rebalanced.head())   
         
 
+=======
+    ROUTE_SYNTHETIC= 'src/data/synthetic_preprocessed.parquet' 
+    ROUTE_COVERWALLET= 'src/data/coverwallet.xlsx'
+    
+    summary_classifier = SummaryClassificationSyntheticNoCV(ROUTE_SYNTHETIC, ROUTE_COVERWALLET)
+    summary_classifier.run()
+    
+>>>>>>> classification_synthetic_no_cv
 if __name__ == '__main__':
     main()
 
