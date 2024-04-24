@@ -1,5 +1,6 @@
 import logging
 from src.models.df_coverwallet_creation import DataProcessor
+from src.models.classification_synthetic_no_cv_frozen import SummaryClassificationSyntheticNoCV
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
