@@ -15,7 +15,11 @@ def main():
     if df_final is not None:
         logging.info("\n%s", df_final.head())
     ''' 
+    ROUTE_SYNTHETIC= 'src/data/synthetic_preprocessed.parquet' 
+    ROUTE_COVERWALLET= 'src/data/coverwallet.xlsx'
     
+    summary_classifier = SummaryClassificationSyntheticNoCV(ROUTE_SYNTHETIC, ROUTE_COVERWALLET)
+    summary_classifier.run()
 
 if __name__ == '__main__':
     main()
