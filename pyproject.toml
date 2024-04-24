@@ -31,7 +31,7 @@ torchvision = "^0.17.2"
 ipykernel = "^6.29.3"
 beautifulsoup4 = "^4.12.3"
 pyarrow = "^15.0.2"
->>>>>>> main
+
 
 
 [tool.poetry.group.dev.dependencies]
