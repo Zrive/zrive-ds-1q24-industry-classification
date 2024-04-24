@@ -448,7 +448,7 @@ class LDAClassifier:
         f1_average = np.mean(f1_scores)
         logging.info("Average F1 Score LDA: %f", f1_average) 
         
-class SummaryClassificationSyntheticNoCV:
+class SummaryClassificationSyntheticWithCV:
     def __init__(self, route_synthetic, route_coverwallet):
         self.route_synthetic = route_synthetic
         self.route_coverwallet = route_coverwallet
