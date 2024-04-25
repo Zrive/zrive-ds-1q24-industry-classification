@@ -7,7 +7,6 @@ import pandas as pd
 from src.models.classification_synthetic_no_cv import SummaryClassificationSyntheticNoCV
 import matplotlib.pyplot as plt
 
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
