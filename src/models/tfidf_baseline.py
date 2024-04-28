@@ -19,13 +19,11 @@ class DataPreparation:
         self.text_col = "BUSINESS_DESCRIPTION"
 
     def load_data(self) -> pd.DataFrame:
-        # data expected in excel format
         df = pd.read_excel(self.data_path)
         logging.info("Coverwallet data loaded")
         return df
 
     def load_synthetic(self) -> pd.DataFrame:
-        # data expected in parquet format
         synthetic_df = pd.read_parquet(self.synthetic_path)
         synthetic_df.drop(columns=[self.text_col], inplace=True)
         synthetic_df.rename(
@@ -37,7 +35,6 @@ class DataPreparation:
         return synthetic_df
 
     def mix_data(self) -> pd.DataFrame:
-        # mix the two dataframes
         df = pd.concat([self.df, self.synthetic_df])
         return df
 
@@ -45,7 +42,6 @@ class DataPreparation:
         self.text_col = text_col
 
     def preprocess_data(self) -> None:
-        # applies stemming and removes stopwords and punctuation
         nlp = spacy.load("en_core_web_sm")
 
         def preprocess(text: str) -> str:
