@@ -25,7 +25,7 @@ def get_df_naics():
     df_naics['48-49'] = df_naics[['48', '49']].max(axis=1)
     df_naics['embeddings'] = df_naics['embeddings'].apply(ast.literal_eval)
     df_naics.drop(['31', '32', '33', '44', '45', '48', '49'], axis=1, inplace=True)
-    df_naics['embeddings'] = df_naics['embeddings'].apply(ast.literal_eval)
+    #df_naics['embeddings'] = df_naics['embeddings'].apply(ast.literal_eval)
     
     class_columns = df_naics.columns[2:]
     counts = df_naics[class_columns].apply(pd.value_counts).loc[1].sort_values()
@@ -43,7 +43,7 @@ def get_df_naics():
                 else:
                     results[col]['non_unique_ones'] += 1
 
-    df_naics['embeddings'] = df_naics['embeddings'].apply(ast.literal_eval)
+    #df_naics['embeddings'] = df_naics['embeddings'].apply(ast.literal_eval)
     return df_naics
 
 class BinaryClassifier(nn.Module):
@@ -105,6 +105,7 @@ class LogisticRegressionModel:
         plt.ylabel('Precision')
         plt.legend()
         plt.grid(True)
+        plt.savefig('precision_recall.jpg')
         plt.show()
     
     def plot_roc_curve(self, fpr, tpr, roc_auc):
@@ -117,6 +118,7 @@ class LogisticRegressionModel:
         plt.ylabel('True Positive Rate')
         plt.title('ROC Curve')
         plt.legend(loc="lower right")
+        plt.savefig('roc.jpg')
         plt.show()
 
 
