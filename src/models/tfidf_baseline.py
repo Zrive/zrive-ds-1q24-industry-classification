@@ -53,10 +53,14 @@ class DataPreparation:
 
         logging.info("Start text preprocessing")
         self.df[self.text_col] = self.df[self.text_col].apply(preprocess)
+        self.synthetic_df[self.text_col] = self.synthetic_df[self.text_col].apply(
+            preprocess
+        )
         logging.info("Text preprocessing ended")
 
-    def save_df(self, path="./model.parquet") -> None:
+    def save_df(self, path="./preprocessed_data.parquet") -> None:
         self.df.to_parquet(path)
+        self.synthetic_df.to_parquet(f"synthetic_{path}")
         logging.info(f"Dataframe saved at {path}")
 
     def train_test_split(self) -> Tuple[pd.DataFrame]:
