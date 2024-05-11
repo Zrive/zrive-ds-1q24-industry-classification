@@ -3,6 +3,12 @@ import os
 from src.models.df_coverwallet_creation import DataProcessor
 from src.models.tfidf_baseline import TfidfBaselineModel, DataPreparation
 from sklearn.metrics import classification_report
+from src.models.noise_conclutions import plot_class_data
+import pandas as pd
+from src.models.final_models import BinaryClassifier
+from src.models.final_models import train_classifier_for_targets,get_df_naics,LogisticRegressionModel
+import pandas as pd
+import ast
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -36,14 +42,24 @@ def main():
     processor = DataProcessor(ROUTE_CERTIFIED_BUSSINESS, ROUTE_SBA_DATASET)
     df_final = processor.load_and_process()
 
-    if df_final is not None:
-        logging.info("\n%s", df_final.head())
-
     try:
         exec_tf_idf_baseline()
     except Exception as e:
         logging.error(e)
-
-
-if __name__ == "__main__":
+    
+   plot_class_data()
+   df_naics = get_df_naics()
+   logistic_model = LogisticRegressionModel(df_naics, '31-33')
+   logistic_model.prepare_data()
+   logistic_model.train_model()
+   logistic_model.evaluate_model()
+   
+   metrics = train_classifier_for_targets(df_naics)
+   
+  
+if __name__ == '__main__':
     main()
+
+
+
+
